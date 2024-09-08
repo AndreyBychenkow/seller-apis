@@ -11,6 +11,25 @@ logger = logging.getLogger(__file__)
 
 
 def get_product_list(page, campaign_id, access_token):
+    """
+    Получает список товаров с Яндекс Маркета для указанной страницы.
+
+    Args:
+        page (str): Токен страницы, который определяет набор товаров для загрузки.
+        campaign_id (str): Идентификатор кампании Яндекс Маркета.
+        access_token (str): Токен доступа для API.
+
+    Returns:
+        dict: JSON объект с результатами, включая товары и информацию о страницах.
+
+    Examples:
+    >>> get_product_list("", "123456", "your_token")
+    {"result": {...}, "paging": {...}}
+
+    Raises:
+    >>> get_product_list("", "wrong_id", "invalid_token")
+    requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url
+    """
     endpoint_url = "https://api.partner.market.yandex.ru/"
     headers = {
         "Content-Type": "application/json",
@@ -30,6 +49,25 @@ def get_product_list(page, campaign_id, access_token):
 
 
 def update_stocks(stocks, campaign_id, access_token):
+    """
+    Обновляет информацию об остатках товаров на Яндекс Маркете.
+
+    Args:
+        stocks (list): Список SKU с количеством для обновления остатков.
+        campaign_id (str): Идентификатор кампании Яндекс Маркета.
+        access_token (str): Токен доступа для API.
+
+    Returns:
+        dict: JSON объект с результатами обновления остатков.
+
+    Examples:
+    >>> update_stocks([{"sku": "123", "items": [{"count": 10, "type": "FIT"}]}], "123456", "your_token")
+    {"result": {...}}
+
+    Raises:
+    >>> update_stocks([], "wrong_id", "invalid_token")
+    requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url
+    """
     endpoint_url = "https://api.partner.market.yandex.ru/"
     headers = {
         "Content-Type": "application/json",
@@ -46,6 +84,25 @@ def update_stocks(stocks, campaign_id, access_token):
 
 
 def update_price(prices, campaign_id, access_token):
+    """
+    Обновляет информацию о ценах товаров на Яндекс Маркете.
+
+    Args:
+        prices (list): Список товаров с новыми ценами.
+        campaign_id (str): Идентификатор кампании Яндекс Маркета.
+        access_token (str): Токен доступа для API.
+
+    Returns:
+        dict: JSON объект с результатами обновления цен.
+
+    Examples:
+    >>> update_price([{"id": "123", "price": {"value": 1000, "currencyId": "RUR"}}], "123456", "your_token")
+    {"result": {...}}
+
+    Raises:
+    >>> update_price([], "wrong_id", "invalid_token")
+    requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url
+    """
     endpoint_url = "https://api.partner.market.yandex.ru/"
     headers = {
         "Content-Type": "application/json",
@@ -62,7 +119,24 @@ def update_price(prices, campaign_id, access_token):
 
 
 def get_offer_ids(campaign_id, market_token):
-    """Получить артикулы товаров Яндекс маркета"""
+    """
+    Получает артикулы товаров с Яндекс Маркета для указанной кампании.
+
+    Args:
+        campaign_id (str): Идентификатор кампании Яндекс Маркета.
+        market_token (str): Токен доступа для API.
+
+    Returns:
+        list: Список артикулов товаров (shopSku).
+
+    Examples:
+    >>> get_offer_ids("123456", "your_token")
+    ["sku_1", "sku_2", ...]
+
+    Raises:
+    >>> get_offer_ids("wrong_id", "invalid_token")
+    requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url
+    """
     page = ""
     product_list = []
     while True:
@@ -71,14 +145,30 @@ def get_offer_ids(campaign_id, market_token):
         page = some_prod.get("paging").get("nextPageToken")
         if not page:
             break
-    offer_ids = []
-    for product in product_list:
-        offer_ids.append(product.get("offer").get("shopSku"))
+    offer_ids = [product.get("offer").get("shopSku") for product in product_list]
     return offer_ids
 
 
 def create_stocks(watch_remnants, offer_ids, warehouse_id):
-    # Уберем то, что не загружено в market
+    """
+    Создает список остатков товаров для обновления на Яндекс Маркете.
+
+    Args:
+        watch_remnants (list): Данные о остатках товаров.
+        offer_ids (list): Список артикулов товаров (shopSku).
+        warehouse_id (str): Идентификатор склада.
+
+    Returns:
+        list: Список остатков для обновления.
+
+    Examples:
+    >>> create_stocks([{"Код": "123", "Количество": "10"}], ["123"], "warehouse_id")
+    [{"sku": "123", "items": [{"count": 10, "type": "FIT", "updatedAt": "2024-09-08T10:10:10Z"}]}]
+
+    Raises:
+    >>> create_stocks([], [], "warehouse_id")
+    []
+    """
     stocks = list()
     date = str(datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z")
     for watch in watch_remnants:
@@ -104,7 +194,6 @@ def create_stocks(watch_remnants, offer_ids, warehouse_id):
                 }
             )
             offer_ids.remove(str(watch.get("Код")))
-    # Добавим недостающее из загруженного:
     for offer_id in offer_ids:
         stocks.append(
             {
@@ -123,20 +212,33 @@ def create_stocks(watch_remnants, offer_ids, warehouse_id):
 
 
 def create_prices(watch_remnants, offer_ids):
+    """
+    Создает список цен для обновления на Яндекс Маркете.
+
+    Args:
+        watch_remnants (list): Данные о ценах товаров.
+        offer_ids (list): Список артикулов товаров (shopSku).
+
+    Returns:
+        list: Список цен для обновления.
+
+    Examples:
+    >>> create_prices([{"Код": "123", "Цена": "1000"}], ["123"])
+    [{"id": "123", "price": {"value": 1000, "currencyId": "RUR"}}]
+
+    Raises:
+    >>> create_prices([], [])
+    []
+    """
     prices = []
     for watch in watch_remnants:
         if str(watch.get("Код")) in offer_ids:
             price = {
                 "id": str(watch.get("Код")),
-                # "feed": {"id": 0},
                 "price": {
                     "value": int(price_conversion(watch.get("Цена"))),
-                    # "discountBase": 0,
                     "currencyId": "RUR",
-                    # "vat": 0,
                 },
-                # "marketSku": 0,
-                # "shopSku": "string",
             }
             prices.append(price)
     return prices
