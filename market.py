@@ -20,7 +20,7 @@ def get_product_list(page, campaign_id, access_token):
         access_token (str): Токен доступа для API.
 
     Returns:
-        dict: JSON объект с результатами, включая товары и информацию о страницах.
+        Список товаров и информация о страницах.
 
     Examples:
     >>> get_product_list("", "123456", "your_token")
@@ -58,7 +58,7 @@ def update_stocks(stocks, campaign_id, access_token):
         access_token (str): Токен доступа для API.
 
     Returns:
-        dict: JSON объект с результатами обновления остатков.
+        Результаты обновления остатков.
 
     Examples:
     >>> update_stocks([{"sku": "123", "items": [{"count": 10, "type": "FIT"}]}], "123456", "your_token")
@@ -93,7 +93,7 @@ def update_price(prices, campaign_id, access_token):
         access_token (str): Токен доступа для API.
 
     Returns:
-        dict: JSON объект с результатами обновления цен.
+        Результаты обновления цен.
 
     Examples:
     >>> update_price([{"id": "123", "price": {"value": 1000, "currencyId": "RUR"}}], "123456", "your_token")
@@ -127,7 +127,7 @@ def get_offer_ids(campaign_id, market_token):
         market_token (str): Токен доступа для API.
 
     Returns:
-        list: Список артикулов товаров (shopSku).
+        Список артикулов товаров (shopSku).
 
     Examples:
     >>> get_offer_ids("123456", "your_token")
@@ -159,7 +159,7 @@ def create_stocks(watch_remnants, offer_ids, warehouse_id):
         warehouse_id (str): Идентификатор склада.
 
     Returns:
-        list: Список остатков для обновления.
+        Список остатков для обновления.
 
     Examples:
     >>> create_stocks([{"Код": "123", "Количество": "10"}], ["123"], "warehouse_id")
@@ -220,7 +220,7 @@ def create_prices(watch_remnants, offer_ids):
         offer_ids (list): Список артикулов товаров (shopSku).
 
     Returns:
-        list: Список цен для обновления.
+        Список цен для обновления.
 
     Examples:
     >>> create_prices([{"Код": "123", "Цена": "1000"}], ["123"])
