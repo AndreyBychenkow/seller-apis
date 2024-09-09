@@ -21,7 +21,7 @@ def get_product_list(last_id: str, client_id: str, seller_token: str) -> dict:
         seller_token (str): Токен API продавца Ozon.
 
     Returns:
-        dict: Словарь, содержащий информацию о товарах, таких как items, total и last_id.
+        Словарь, содержащий информацию о товарах.
 
     Examples:
         >>> get_product_list("", "my_client_id", "my_seller_token")
@@ -58,7 +58,7 @@ def get_offer_ids(client_id: str, seller_token: str) -> list:
         seller_token (str): Токен API продавца Ozon.
 
     Returns:
-        list: Список артикулов товаров.
+        Список артикулов товаров.
 
     Examples:
         >>> get_offer_ids("my_client_id", "my_seller_token")
@@ -91,7 +91,7 @@ def update_price(prices: list, client_id: str, seller_token: str) -> dict:
         seller_token (str): Токен API продавца Ozon.
 
     Returns:
-        dict: Словарь с ответом от API.
+        Словарь с ответом от API.
 
     Examples:
         >>> update_price([{'offer_id': '123', 'price': '5990'}], "my_client_id", "my_seller_token")
@@ -122,7 +122,7 @@ def update_stocks(stocks: list, client_id: str, seller_token: str) -> dict:
         seller_token (str): Токен API продавца Ozon.
 
     Returns:
-        dict: Словарь с ответом от API.
+        Словарь с ответом от API.
 
     Examples:
         >>> update_stocks([{'offer_id': '123', 'stock': 100}], "my_client_id", "my_seller_token")
@@ -148,7 +148,7 @@ def download_stock() -> list:
     Скачать и распарсить файл с остатками с сайта Casio.
 
     Returns:
-        list: Список данных об остатках часов в формате словаря.
+        Список данных об остатках часов в формате словаря.
 
     Examples:
         >>> download_stock()
@@ -184,7 +184,7 @@ def create_stocks(watch_remnants: list, offer_ids: list) -> list:
         offer_ids (list): Список артикулов для сопоставления с остатками.
 
     Returns:
-        list: Список словарей с offer_id и остатками товаров.
+        Список словарей с offer_id и остатками товаров.
 
     Examples:
         >>> create_stocks([{'Код': '123', 'Количество': '10'}], ['123'])
@@ -220,7 +220,7 @@ def create_prices(watch_remnants: list, offer_ids: list) -> list:
         offer_ids (list): Список артикулов для сопоставления с остатками.
 
     Returns:
-        list: Список словарей с offer_id, ценами и валютой.
+        Список словарей с offer_id, ценами и валютой.
 
     Examples:
         >>> create_prices([{'Код': '123', 'Цена': '5990'}], ['123'])
@@ -254,7 +254,7 @@ def price_conversion(price: str) -> str:
         price (str): Цена в строковом формате, например, "5'990.00 руб."
 
     Returns:
-        str: Цена в числовом формате без разделителей и валютных символов, например, "5990".
+        Цена в числовом формате без разделителей и валютных символов, например, "5990".
 
     Examples:
         >>> price_conversion("5'990.00 руб.")
@@ -279,7 +279,7 @@ def divide(lst: list, n: int):
     n (int): Количество элементов в каждой части.
 
     Returns:
-    generator: Части списка.
+    Части списка.
 
     Examples:
     >>> list(divide([1, 2, 3, 4], 2))
